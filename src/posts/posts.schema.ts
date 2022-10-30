@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { SoftDeleteDocument } from 'mongoose-delete';
 import * as MongooseDelete from 'mongoose-delete';
-export type PostDocument = Post & Document & SoftDeleteDocument;
+export type PostDocument = Post & Document & MongooseDelete.SoftDeleteDocument;
 export enum PostStatus {
   ACTIVE = 'active',
   PENDING = 'pending',
