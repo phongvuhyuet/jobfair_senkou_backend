@@ -21,7 +21,6 @@ export class PostsService {
         select: 'name _id',
       })
       .exec();
-    console.log(result[20]);
 
     return result;
   }

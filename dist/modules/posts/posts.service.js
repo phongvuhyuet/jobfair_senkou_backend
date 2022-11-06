@@ -33,7 +33,6 @@ let PostsService = class PostsService {
             select: 'name _id',
         })
             .exec();
-        console.log(result[20]);
         return result;
     }
     async findOne(id) {

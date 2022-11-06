@@ -15,7 +15,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreatePostDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { title: { required: true, type: () => String }, content: { required: true, type: () => String } };
+        return { title: { required: true, type: () => String }, content: { required: true, type: () => String }, topic_id: { required: true, type: () => String } };
     }
 }
 __decorate([
@@ -28,5 +28,10 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
 ], CreatePostDto.prototype, "content", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], CreatePostDto.prototype, "topic_id", void 0);
 exports.CreatePostDto = CreatePostDto;
 //# sourceMappingURL=create-post.dto.js.map
