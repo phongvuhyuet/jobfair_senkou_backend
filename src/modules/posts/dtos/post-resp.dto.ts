@@ -1,6 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
-
+import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
+import { Expose, Transform, Type } from 'class-transformer';
+export class UserInfo {
+  name: string;
+  _id: string;
+}
+export class TopicInfo {
+  name: string;
+  _id: string;
+}
 export class PostResponseDto {
   @Expose()
   @Transform((params) => params.obj._id)
@@ -16,12 +23,16 @@ export class PostResponseDto {
   content: string;
 
   @Expose()
+  @Transform((params) => params.obj.topic_id)
+  @Type(() => TopicInfo)
   @ApiProperty()
-  topic_id: string;
+  topic: TopicInfo;
 
   @Expose()
+  @Transform((params) => params.obj.user_id)
+  @Type(() => UserInfo)
   @ApiProperty()
-  user_id: string;
+  user: UserInfo;
 
   @Expose()
   @ApiProperty()

@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import * as MongooseDelete from 'mongoose-delete';
+import { Topic } from '../topics/topics.schema';
+import { User } from '../users/users.schema';
 export type PostDocument = Post & Document & MongooseDelete.SoftDeleteDocument;
 export enum PostStatus {
   ACTIVE = 'active',
@@ -16,11 +18,19 @@ export class Post {
   @Prop({ required: true })
   content: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, default: null })
-  topic_id: string;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+    ref: 'Topic',
+  })
+  topic_id: Topic;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, default: null })
-  user_id: string;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    default: null,
+    ref: 'User',
+  })
+  user_id: User;
 
   @Prop({ default: 0 })
   upvote_count: string;

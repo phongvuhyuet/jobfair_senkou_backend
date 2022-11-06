@@ -8,9 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const posts_module_1 = require("./posts/posts.module");
+const posts_module_1 = require("./modules/posts/posts.module");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
+const topics_module_1 = require("./modules/topics/topics.module");
+const users_module_1 = require("./modules/users/users.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -27,6 +29,8 @@ AppModule = __decorate([
                 }),
                 inject: [config_1.ConfigService],
             }),
+            topics_module_1.TopicsModule,
+            users_module_1.UsersModule,
         ],
     })
 ], AppModule);

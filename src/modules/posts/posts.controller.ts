@@ -18,7 +18,7 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
-import { StatusResponseDto } from './dtos/status-resp.dto';
+import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { PostResponseDto } from './dtos/post-resp.dto';
 
