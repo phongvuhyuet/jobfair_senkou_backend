@@ -27,17 +27,18 @@ import { PostResponseDto } from './dtos/post-resp.dto';
 export class PostsController {
   constructor(private postService: PostsService) {}
   @Post()
-  @ApiExtraModels(StatusResponseDto)
+  @Serialize(PostResponseDto)
+  @ApiExtraModels(PostResponseDto)
   @ApiOkResponse({
     status: 201,
     schema: {
-      $ref: getSchemaPath(StatusResponseDto),
+      $ref: getSchemaPath(PostResponseDto),
     },
   })
   @ApiOperation({ description: 'create posts', summary: 'create post' })
-  async createPost(@Body() body: CreatePostDto): Promise<StatusResponseDto> {
+  async createPost(@Body() body: CreatePostDto): Promise<PostResponseDto> {
     const res = await this.postService.create(body);
-    return res;
+    return res as unknown as PostResponseDto;
   }
 
   @Put('/:id')

@@ -5,6 +5,7 @@ import { Post, PostDocument } from './posts.schema';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
+import { PostResponseDto } from './dtos/post-resp.dto';
 
 @Injectable()
 export class PostsService {
@@ -42,10 +43,9 @@ export class PostsService {
     if (!post) throw new NotFoundException('Post not found');
     return post;
   }
-  async create(body: CreatePostDto): Promise<StatusResponseDto> {
+  async create(body: CreatePostDto): Promise<PostDocument> {
     const newPost = new this.postModel(body);
-    await newPost.save();
-    return { message: 'Create success' };
+    return await newPost.save();
   }
   async update(id: string, body: UpdatePostDto): Promise<StatusResponseDto> {
     if (!mongoose.Types.ObjectId.isValid(id))

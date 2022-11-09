@@ -55,8 +55,7 @@ let PostsService = class PostsService {
     }
     async create(body) {
         const newPost = new this.postModel(body);
-        await newPost.save();
-        return { message: 'Create success' };
+        return await newPost.save();
     }
     async update(id, body) {
         if (!mongoose_2.default.Types.ObjectId.isValid(id))

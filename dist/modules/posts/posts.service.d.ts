@@ -8,7 +8,7 @@ export declare class PostsService {
     constructor(postModel: Model<PostDocument>);
     findAll(): Promise<PostDocument[]>;
     findOne(id: string): Promise<PostDocument>;
-    create(body: CreatePostDto): Promise<StatusResponseDto>;
+    create(body: CreatePostDto): Promise<PostDocument>;
     update(id: string, body: UpdatePostDto): Promise<StatusResponseDto>;
     delete(id: string): Promise<StatusResponseDto>;
     updateAll(body: UpdatePostDto): Promise<{

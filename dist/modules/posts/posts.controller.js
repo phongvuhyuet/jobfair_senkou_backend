@@ -45,15 +45,16 @@ let PostsController = class PostsController {
 };
 __decorate([
     (0, common_1.Post)(),
-    (0, swagger_1.ApiExtraModels)(status_resp_dto_1.StatusResponseDto),
+    (0, serialize_interceptor_1.Serialize)(post_resp_dto_1.PostResponseDto),
+    (0, swagger_1.ApiExtraModels)(post_resp_dto_1.PostResponseDto),
     (0, swagger_1.ApiOkResponse)({
         status: 201,
         schema: {
-            $ref: (0, swagger_1.getSchemaPath)(status_resp_dto_1.StatusResponseDto),
+            $ref: (0, swagger_1.getSchemaPath)(post_resp_dto_1.PostResponseDto),
         },
     }),
     (0, swagger_1.ApiOperation)({ description: 'create posts', summary: 'create post' }),
-    openapi.ApiResponse({ status: 201, type: require("../../common-dtos/status-resp.dto").StatusResponseDto }),
+    openapi.ApiResponse({ status: 201, type: require("./dtos/post-resp.dto").PostResponseDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_post_dto_1.CreatePostDto]),

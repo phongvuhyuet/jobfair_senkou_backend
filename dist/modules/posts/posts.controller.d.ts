@@ -6,7 +6,7 @@ import { PostResponseDto } from './dtos/post-resp.dto';
 export declare class PostsController {
     private postService;
     constructor(postService: PostsService);
-    createPost(body: CreatePostDto): Promise<StatusResponseDto>;
+    createPost(body: CreatePostDto): Promise<PostResponseDto>;
     updatePost(body: UpdatePostDto, id: string): Promise<StatusResponseDto>;
     deletePost(id: string): Promise<StatusResponseDto>;
     getPosts(): Promise<PostResponseDto[]>;
