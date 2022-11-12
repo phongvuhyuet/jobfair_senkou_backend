@@ -36,8 +36,12 @@ let PostsController = class PostsController {
     deletePost(id) {
         return this.postService.delete(id);
     }
-    getPosts() {
-        return this.postService.findAll();
+    filterPostByTopic(topic_id) {
+        return this.postService.filter(topic_id);
+    }
+    getLatestPost() {
+        const DEFAULT_POST_COUNT = 5;
+        return this.postService.newestPosts(DEFAULT_POST_COUNT);
     }
     getPost(id) {
         return this.postService.findOne(id);
@@ -95,7 +99,7 @@ __decorate([
 ], PostsController.prototype, "deletePost", null);
 __decorate([
     (0, serialize_interceptor_1.Serialize)(post_resp_dto_1.PostResponseDto),
-    (0, common_1.Get)(),
+    (0, common_1.Get)('by-topic'),
     (0, swagger_1.ApiOkResponse)({
         status: 200,
         schema: {
@@ -105,12 +109,37 @@ __decorate([
             },
         },
     }),
-    (0, swagger_1.ApiOperation)({ description: 'get list posts', summary: 'get list posts' }),
+    (0, swagger_1.ApiOperation)({
+        description: 'filter list posts by topic',
+        summary: 'filter list post by topic posts',
+    }),
+    openapi.ApiResponse({ status: 200, type: [require("./dtos/post-resp.dto").PostResponseDto] }),
+    __param(0, (0, common_1.Query)('topic_id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "filterPostByTopic", null);
+__decorate([
+    (0, serialize_interceptor_1.Serialize)(post_resp_dto_1.PostResponseDto),
+    (0, common_1.Get)('newest'),
+    (0, swagger_1.ApiOkResponse)({
+        status: 200,
+        schema: {
+            type: 'array',
+            items: {
+                $ref: (0, swagger_1.getSchemaPath)(post_resp_dto_1.PostResponseDto),
+            },
+        },
+    }),
+    (0, swagger_1.ApiOperation)({
+        description: 'newest 5 post',
+        summary: 'newest 5 post',
+    }),
     openapi.ApiResponse({ status: 200, type: [require("./dtos/post-resp.dto").PostResponseDto] }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], PostsController.prototype, "getPosts", null);
+], PostsController.prototype, "getLatestPost", null);
 __decorate([
     (0, serialize_interceptor_1.Serialize)(post_resp_dto_1.PostResponseDto),
     (0, common_1.Get)('/:id'),

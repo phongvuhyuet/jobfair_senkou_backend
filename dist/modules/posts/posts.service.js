@@ -35,6 +35,35 @@ let PostsService = class PostsService {
             .exec();
         return result;
     }
+    async filter(topic_id) {
+        const result = await this.postModel
+            .find({ topic_id: topic_id })
+            .populate({
+            path: 'user_id',
+            select: 'name _id',
+        })
+            .populate({
+            path: 'topic_id',
+            select: 'name _id',
+        })
+            .exec();
+        return result;
+    }
+    async newestPosts(count) {
+        return await this.postModel
+            .find({})
+            .populate({
+            path: 'user_id',
+            select: 'name _id',
+        })
+            .populate({
+            path: 'topic_id',
+            select: 'name _id',
+        })
+            .sort({ createdAt: 'desc' })
+            .limit(count)
+            .exec();
+    }
     async findOne(id) {
         if (!mongoose_2.default.Types.ObjectId.isValid(id))
             throw new common_1.NotFoundException('Post not found');

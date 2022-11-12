@@ -18,6 +18,7 @@ PostsModule = __decorate([
     (0, common_1.Module)({
         controllers: [posts_controller_1.PostsController],
         providers: [posts_service_1.PostsService],
+        exports: [posts_service_1.PostsService],
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: posts_schema_1.Post.name, schema: posts_schema_1.PostSchema }]),
         ],

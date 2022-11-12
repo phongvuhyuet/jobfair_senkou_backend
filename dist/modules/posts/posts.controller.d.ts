@@ -9,6 +9,7 @@ export declare class PostsController {
     createPost(body: CreatePostDto): Promise<PostResponseDto>;
     updatePost(body: UpdatePostDto, id: string): Promise<StatusResponseDto>;
     deletePost(id: string): Promise<StatusResponseDto>;
-    getPosts(): Promise<PostResponseDto[]>;
+    filterPostByTopic(topic_id: string): Promise<PostResponseDto[]>;
+    getLatestPost(): Promise<PostResponseDto[]>;
     getPost(id: string): Promise<PostResponseDto>;
 }

@@ -6,11 +6,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiExtraModels,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
   getSchemaPath,
@@ -21,6 +23,7 @@ import { CreateTopicDto } from './dtos/create-topic.dto';
 import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { TopicRespDto } from './dtos/topic-resp.dto';
+import { TopicWithPostCountDto } from './dtos/topic-with-post-count-resp.dto';
 
 @ApiTags('topics')
 @Controller('topics')
@@ -98,5 +101,30 @@ export class TopicController {
   @ApiOperation({ description: 'get topic', summary: 'get topic' })
   getPost(@Param('id') id: string): Promise<TopicRespDto> {
     return this.topicService.findOne(id) as unknown as Promise<TopicRespDto>;
+  }
+
+  @Serialize(TopicWithPostCountDto)
+  @Get('/all/with-post-count')
+  @ApiQuery({ name: 'topic_count', required: false, type: String })
+  @ApiExtraModels(TopicWithPostCountDto)
+  @ApiOkResponse({
+    status: 200,
+    schema: {
+      type: 'array',
+      items: {
+        $ref: getSchemaPath(TopicWithPostCountDto),
+      },
+    },
+  })
+  @ApiOperation({
+    description: 'get topic with post count',
+    summary: 'get topic with post count',
+  })
+  getWithPostCount(
+    @Query('topic_count') topic_count: number,
+  ): Promise<TopicWithPostCountDto> {
+    return this.topicService.getAllWithPostCount(
+      topic_count,
+    ) as unknown as Promise<TopicWithPostCountDto>;
   }
 }

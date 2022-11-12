@@ -1,15 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Topic, TopicDocument } from './topics.schema';
 import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
 import { CreateTopicDto } from './dtos/create-topic.dto';
 import { UpdateTopicDto } from './dtos/update-topic.dto';
+import { TopicRespDto } from './dtos/topic-resp.dto';
+import pipeline from './pipeline/topic-with-post-count.pipeline';
+import { TopicWithPostCountDto } from './dtos/topic-with-post-count-resp.dto';
+import { PostsService } from '../posts/posts.service';
 
 @Injectable()
 export class TopicService {
   constructor(
     @InjectModel(Topic.name) private topicModel: Model<TopicDocument>,
+    private postsService: PostsService,
   ) {}
   async findAll(): Promise<TopicDocument[]> {
     const result = this.topicModel.find().exec();
@@ -40,9 +49,18 @@ export class TopicService {
       throw new NotFoundException('topic not found');
     const topic = await this.topicModel.findById(id);
     if (!topic) throw new NotFoundException('topic not found');
+    if ((await this.postsService.filter(id)).length > 0)
+      throw new BadRequestException('contained post');
     await topic.delete();
     return {
       message: 'Delete Success',
     };
+  }
+  async getAllWithPostCount(
+    topic_count: number,
+  ): Promise<TopicWithPostCountDto[]> {
+    const result = this.topicModel.aggregate(pipeline);
+    if (topic_count) return result.limit(Number(topic_count)).exec();
+    return result.exec();
   }
 }

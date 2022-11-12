@@ -25,6 +25,36 @@ export class PostsService {
 
     return result;
   }
+  async filter(topic_id: string): Promise<PostDocument[]> {
+    const result = await this.postModel
+      .find({ topic_id: topic_id })
+      .populate({
+        path: 'user_id',
+        select: 'name _id',
+      })
+      .populate({
+        path: 'topic_id',
+        select: 'name _id',
+      })
+      .exec();
+
+    return result;
+  }
+  async newestPosts(count: number): Promise<PostDocument[]> {
+    return await this.postModel
+      .find({})
+      .populate({
+        path: 'user_id',
+        select: 'name _id',
+      })
+      .populate({
+        path: 'topic_id',
+        select: 'name _id',
+      })
+      .sort({ createdAt: 'desc' })
+      .limit(count)
+      .exec();
+  }
   async findOne(id: string): Promise<PostDocument> {
     if (!mongoose.Types.ObjectId.isValid(id))
       throw new NotFoundException('Post not found');

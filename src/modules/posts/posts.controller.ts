@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiExtraModels,
@@ -71,7 +72,7 @@ export class PostsController {
   }
 
   @Serialize(PostResponseDto)
-  @Get()
+  @Get('by-topic')
   @ApiOkResponse({
     status: 200,
     schema: {
@@ -81,9 +82,38 @@ export class PostsController {
       },
     },
   })
-  @ApiOperation({ description: 'get list posts', summary: 'get list posts' })
-  getPosts(): Promise<PostResponseDto[]> {
-    return this.postService.findAll() as unknown as Promise<PostResponseDto[]>;
+  @ApiOperation({
+    description: 'filter list posts by topic',
+    summary: 'filter list post by topic posts',
+  })
+  filterPostByTopic(
+    @Query('topic_id') topic_id: string,
+  ): Promise<PostResponseDto[]> {
+    return this.postService.filter(topic_id) as unknown as Promise<
+      PostResponseDto[]
+    >;
+  }
+
+  @Serialize(PostResponseDto)
+  @Get('newest')
+  @ApiOkResponse({
+    status: 200,
+    schema: {
+      type: 'array',
+      items: {
+        $ref: getSchemaPath(PostResponseDto),
+      },
+    },
+  })
+  @ApiOperation({
+    description: 'newest 5 post',
+    summary: 'newest 5 post',
+  })
+  getLatestPost(): Promise<PostResponseDto[]> {
+    const DEFAULT_POST_COUNT = 5;
+    return this.postService.newestPosts(
+      DEFAULT_POST_COUNT,
+    ) as unknown as Promise<PostResponseDto[]>;
   }
 
   @Serialize(PostResponseDto)

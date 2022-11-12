@@ -17,9 +17,12 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const topics_schema_1 = require("./topics.schema");
+const topic_with_post_count_pipeline_1 = require("./pipeline/topic-with-post-count.pipeline");
+const posts_service_1 = require("../posts/posts.service");
 let TopicService = class TopicService {
-    constructor(topicModel) {
+    constructor(topicModel, postsService) {
         this.topicModel = topicModel;
+        this.postsService = postsService;
     }
     async findAll() {
         const result = this.topicModel.find().exec();
@@ -52,16 +55,25 @@ let TopicService = class TopicService {
         const topic = await this.topicModel.findById(id);
         if (!topic)
             throw new common_1.NotFoundException('topic not found');
+        if ((await this.postsService.filter(id)).length > 0)
+            throw new common_1.BadRequestException('contained post');
         await topic.delete();
         return {
             message: 'Delete Success',
         };
     }
+    async getAllWithPostCount(topic_count) {
+        const result = this.topicModel.aggregate(topic_with_post_count_pipeline_1.default);
+        if (topic_count)
+            return result.limit(Number(topic_count)).exec();
+        return result.exec();
+    }
 };
 TopicService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(topics_schema_1.Topic.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        posts_service_1.PostsService])
 ], TopicService);
 exports.TopicService = TopicService;
 //# sourceMappingURL=topics.service.js.map

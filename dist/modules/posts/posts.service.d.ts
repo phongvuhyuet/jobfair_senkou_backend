@@ -7,6 +7,8 @@ export declare class PostsService {
     private postModel;
     constructor(postModel: Model<PostDocument>);
     findAll(): Promise<PostDocument[]>;
+    filter(topic_id: string): Promise<PostDocument[]>;
+    newestPosts(count: number): Promise<PostDocument[]>;
     findOne(id: string): Promise<PostDocument>;
     create(body: CreatePostDto): Promise<PostDocument>;
     update(id: string, body: UpdatePostDto): Promise<StatusResponseDto>;

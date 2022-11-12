@@ -22,6 +22,7 @@ const create_topic_dto_1 = require("./dtos/create-topic.dto");
 const status_resp_dto_1 = require("../../common-dtos/status-resp.dto");
 const serialize_interceptor_1 = require("../../interceptors/serialize.interceptor");
 const topic_resp_dto_1 = require("./dtos/topic-resp.dto");
+const topic_with_post_count_resp_dto_1 = require("./dtos/topic-with-post-count-resp.dto");
 let TopicController = class TopicController {
     constructor(topicService) {
         this.topicService = topicService;
@@ -41,6 +42,9 @@ let TopicController = class TopicController {
     }
     getPost(id) {
         return this.topicService.findOne(id);
+    }
+    getWithPostCount(topic_count) {
+        return this.topicService.getAllWithPostCount(topic_count);
     }
 };
 __decorate([
@@ -128,6 +132,30 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TopicController.prototype, "getPost", null);
+__decorate([
+    (0, serialize_interceptor_1.Serialize)(topic_with_post_count_resp_dto_1.TopicWithPostCountDto),
+    (0, common_1.Get)('/all/with-post-count'),
+    (0, swagger_1.ApiQuery)({ name: 'topic_count', required: false, type: String }),
+    (0, swagger_1.ApiExtraModels)(topic_with_post_count_resp_dto_1.TopicWithPostCountDto),
+    (0, swagger_1.ApiOkResponse)({
+        status: 200,
+        schema: {
+            type: 'array',
+            items: {
+                $ref: (0, swagger_1.getSchemaPath)(topic_with_post_count_resp_dto_1.TopicWithPostCountDto),
+            },
+        },
+    }),
+    (0, swagger_1.ApiOperation)({
+        description: 'get topic with post count',
+        summary: 'get topic with post count',
+    }),
+    openapi.ApiResponse({ status: 200, type: require("./dtos/topic-with-post-count-resp.dto").TopicWithPostCountDto }),
+    __param(0, (0, common_1.Query)('topic_count')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], TopicController.prototype, "getWithPostCount", null);
 TopicController = __decorate([
     (0, swagger_1.ApiTags)('topics'),
     (0, common_1.Controller)('topics'),
