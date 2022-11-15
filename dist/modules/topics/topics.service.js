@@ -37,9 +37,9 @@ let TopicService = class TopicService {
         return topic;
     }
     async create(body) {
-        const newPost = new this.topicModel(body);
-        await newPost.save();
-        return { message: 'Create success' };
+        const newTopic = new this.topicModel(body);
+        await newTopic.save();
+        return await newTopic.save();
     }
     async update(id, body) {
         if (!mongoose_2.default.Types.ObjectId.isValid(id))

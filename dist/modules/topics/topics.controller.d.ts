@@ -7,7 +7,7 @@ import { TopicWithPostCountDto } from './dtos/topic-with-post-count-resp.dto';
 export declare class TopicController {
     private topicService;
     constructor(topicService: TopicService);
-    createPost(body: CreateTopicDto): Promise<StatusResponseDto>;
+    createPost(body: CreateTopicDto): Promise<TopicRespDto>;
     updatePost(body: UpdateTopicDto, id: string): Promise<StatusResponseDto>;
     deletePost(id: string): Promise<StatusResponseDto>;
     getPosts(): Promise<TopicRespDto[]>;

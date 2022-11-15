@@ -49,6 +49,7 @@ let TopicController = class TopicController {
 };
 __decorate([
     (0, common_1.Post)(),
+    (0, serialize_interceptor_1.Serialize)(topic_resp_dto_1.TopicRespDto),
     (0, swagger_1.ApiExtraModels)(status_resp_dto_1.StatusResponseDto),
     (0, swagger_1.ApiOkResponse)({
         status: 201,
@@ -57,7 +58,7 @@ __decorate([
         },
     }),
     (0, swagger_1.ApiOperation)({ description: 'create topics', summary: 'create topic' }),
-    openapi.ApiResponse({ status: 201, type: require("../../common-dtos/status-resp.dto").StatusResponseDto }),
+    openapi.ApiResponse({ status: 201, type: require("./dtos/topic-resp.dto").TopicRespDto }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_topic_dto_1.CreateTopicDto]),

@@ -11,7 +11,7 @@ export declare class TopicService {
     constructor(topicModel: Model<TopicDocument>, postsService: PostsService);
     findAll(): Promise<TopicDocument[]>;
     findOne(id: string): Promise<TopicDocument>;
-    create(body: CreateTopicDto): Promise<StatusResponseDto>;
+    create(body: CreateTopicDto): Promise<TopicDocument>;
     update(id: string, body: UpdateTopicDto): Promise<StatusResponseDto>;
     delete(id: string): Promise<StatusResponseDto>;
     getAllWithPostCount(topic_count: number): Promise<TopicWithPostCountDto[]>;

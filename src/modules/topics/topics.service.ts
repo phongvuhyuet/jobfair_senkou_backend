@@ -32,10 +32,10 @@ export class TopicService {
     if (!topic) throw new NotFoundException('Topic not found');
     return topic;
   }
-  async create(body: CreateTopicDto): Promise<StatusResponseDto> {
-    const newPost = new this.topicModel(body);
-    await newPost.save();
-    return { message: 'Create success' };
+  async create(body: CreateTopicDto): Promise<TopicDocument> {
+    const newTopic = new this.topicModel(body);
+    await newTopic.save();
+    return await newTopic.save();
   }
   async update(id: string, body: UpdateTopicDto): Promise<StatusResponseDto> {
     if (!mongoose.Types.ObjectId.isValid(id))

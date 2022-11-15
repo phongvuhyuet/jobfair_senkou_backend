@@ -30,6 +30,7 @@ import { TopicWithPostCountDto } from './dtos/topic-with-post-count-resp.dto';
 export class TopicController {
   constructor(private topicService: TopicService) {}
   @Post()
+  @Serialize(TopicRespDto)
   @ApiExtraModels(StatusResponseDto)
   @ApiOkResponse({
     status: 201,
@@ -38,9 +39,9 @@ export class TopicController {
     },
   })
   @ApiOperation({ description: 'create topics', summary: 'create topic' })
-  async createPost(@Body() body: CreateTopicDto): Promise<StatusResponseDto> {
+  async createPost(@Body() body: CreateTopicDto): Promise<TopicRespDto> {
     const res = await this.topicService.create(body);
-    return res;
+    return res as unknown as TopicRespDto;
   }
 
   @Put('/:id')
