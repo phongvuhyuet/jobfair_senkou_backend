@@ -50,11 +50,11 @@ let TopicController = class TopicController {
 __decorate([
     (0, common_1.Post)(),
     (0, serialize_interceptor_1.Serialize)(topic_resp_dto_1.TopicRespDto),
-    (0, swagger_1.ApiExtraModels)(status_resp_dto_1.StatusResponseDto),
+    (0, swagger_1.ApiExtraModels)(topic_resp_dto_1.TopicRespDto),
     (0, swagger_1.ApiOkResponse)({
         status: 201,
         schema: {
-            $ref: (0, swagger_1.getSchemaPath)(status_resp_dto_1.StatusResponseDto),
+            $ref: (0, swagger_1.getSchemaPath)(topic_resp_dto_1.TopicRespDto),
         },
     }),
     (0, swagger_1.ApiOperation)({ description: 'create topics', summary: 'create topic' }),
