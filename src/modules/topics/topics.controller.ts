@@ -31,11 +31,11 @@ export class TopicController {
   constructor(private topicService: TopicService) {}
   @Post()
   @Serialize(TopicRespDto)
-  @ApiExtraModels(StatusResponseDto)
+  @ApiExtraModels(TopicRespDto)
   @ApiOkResponse({
     status: 201,
     schema: {
-      $ref: getSchemaPath(StatusResponseDto),
+      $ref: getSchemaPath(TopicRespDto),
     },
   })
   @ApiOperation({ description: 'create topics', summary: 'create topic' })
