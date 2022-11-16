@@ -36,6 +36,7 @@ export class PostsService {
         path: 'topic_id',
         select: 'name _id',
       })
+      .sort({ createdAt: 'desc' })
       .exec();
 
     return result;
