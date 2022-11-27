@@ -22,6 +22,8 @@ const update_post_dto_1 = require("./dtos/update-post.dto");
 const status_resp_dto_1 = require("../../common-dtos/status-resp.dto");
 const serialize_interceptor_1 = require("../../interceptors/serialize.interceptor");
 const post_resp_dto_1 = require("./dtos/post-resp.dto");
+const vote_post_dto_1 = require("./dtos/vote-post.dto");
+const filter_post_dto_1 = require("./dtos/filter-post.dto");
 let PostsController = class PostsController {
     constructor(postService) {
         this.postService = postService;
@@ -36,8 +38,8 @@ let PostsController = class PostsController {
     deletePost(id) {
         return this.postService.delete(id);
     }
-    filterPostByTopic(topic_id) {
-        return this.postService.filter(topic_id);
+    filterPosts(filter) {
+        return this.postService.filter(filter);
     }
     getLatestPost() {
         const DEFAULT_POST_COUNT = 5;
@@ -45,6 +47,9 @@ let PostsController = class PostsController {
     }
     getPost(id) {
         return this.postService.findOne(id);
+    }
+    votePost(id, votePostReq) {
+        return this.postService.votePost(id, votePostReq);
     }
 };
 __decorate([
@@ -99,7 +104,7 @@ __decorate([
 ], PostsController.prototype, "deletePost", null);
 __decorate([
     (0, serialize_interceptor_1.Serialize)(post_resp_dto_1.PostResponseDto),
-    (0, common_1.Get)('by-topic'),
+    (0, common_1.Get)('/filter'),
     (0, swagger_1.ApiOkResponse)({
         status: 200,
         schema: {
@@ -110,15 +115,15 @@ __decorate([
         },
     }),
     (0, swagger_1.ApiOperation)({
-        description: 'filter list posts by topic',
-        summary: 'filter list post by topic posts',
+        description: 'filter list posts by topic and title',
+        summary: 'filter list post by topic posts and title',
     }),
     openapi.ApiResponse({ status: 200, type: [require("./dtos/post-resp.dto").PostResponseDto] }),
-    __param(0, (0, common_1.Query)('topic_id')),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [filter_post_dto_1.FilterPostDto]),
     __metadata("design:returntype", Promise)
-], PostsController.prototype, "filterPostByTopic", null);
+], PostsController.prototype, "filterPosts", null);
 __decorate([
     (0, serialize_interceptor_1.Serialize)(post_resp_dto_1.PostResponseDto),
     (0, common_1.Get)('newest'),
@@ -158,6 +163,23 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getPost", null);
+__decorate([
+    (0, common_1.Post)('/:id/vote'),
+    (0, swagger_1.ApiOkResponse)({
+        status: 200,
+        schema: {
+            $ref: (0, swagger_1.getSchemaPath)(status_resp_dto_1.StatusResponseDto),
+        },
+    }),
+    (0, swagger_1.ApiResponse)({ status: 404 }),
+    (0, swagger_1.ApiOperation)({ description: 'vote post', summary: 'vote post' }),
+    openapi.ApiResponse({ status: 201, type: require("../../common-dtos/status-resp.dto").StatusResponseDto }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, vote_post_dto_1.VotePostDto]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "votePost", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('posts'),
     (0, common_1.Controller)('posts'),

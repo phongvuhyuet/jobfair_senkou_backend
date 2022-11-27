@@ -13,8 +13,8 @@ export declare class Post {
     content: string;
     topic_id: Topic;
     user_id: User;
-    upvote_count: string;
-    downvote_count: string;
+    upvote_count: number;
+    downvote_count: number;
     reject_reason?: string;
     publishedAt?: Date;
     status: PostStatus;

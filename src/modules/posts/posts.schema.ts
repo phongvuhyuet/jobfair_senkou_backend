@@ -33,10 +33,10 @@ export class Post {
   user_id: User;
 
   @Prop({ default: 0 })
-  upvote_count: string;
+  upvote_count: number;
 
   @Prop({ default: 0 })
-  downvote_count: string;
+  downvote_count: number;
 
   @Prop()
   reject_reason?: string;

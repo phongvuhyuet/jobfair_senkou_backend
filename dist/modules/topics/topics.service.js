@@ -55,7 +55,7 @@ let TopicService = class TopicService {
         const topic = await this.topicModel.findById(id);
         if (!topic)
             throw new common_1.NotFoundException('topic not found');
-        if ((await this.postsService.filter(id)).length > 0)
+        if ((await this.postsService.filter({ topic_id: id })).length > 0)
             throw new common_1.BadRequestException('contained post');
         await topic.delete();
         return {

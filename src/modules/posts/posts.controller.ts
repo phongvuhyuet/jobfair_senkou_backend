@@ -22,6 +22,8 @@ import { UpdatePostDto } from './dtos/update-post.dto';
 import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { PostResponseDto } from './dtos/post-resp.dto';
+import { VotePostDto } from './dtos/vote-post.dto';
+import { FilterPostDto } from './dtos/filter-post.dto';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -72,7 +74,7 @@ export class PostsController {
   }
 
   @Serialize(PostResponseDto)
-  @Get('by-topic')
+  @Get('/filter')
   @ApiOkResponse({
     status: 200,
     schema: {
@@ -83,13 +85,11 @@ export class PostsController {
     },
   })
   @ApiOperation({
-    description: 'filter list posts by topic',
-    summary: 'filter list post by topic posts',
+    description: 'filter list posts by topic and title',
+    summary: 'filter list post by topic posts and title',
   })
-  filterPostByTopic(
-    @Query('topic_id') topic_id: string,
-  ): Promise<PostResponseDto[]> {
-    return this.postService.filter(topic_id) as unknown as Promise<
+  filterPosts(@Query() filter: FilterPostDto): Promise<PostResponseDto[]> {
+    return this.postService.filter(filter) as unknown as Promise<
       PostResponseDto[]
     >;
   }
@@ -129,5 +129,24 @@ export class PostsController {
   @ApiOperation({ description: 'get post', summary: 'get post' })
   getPost(@Param('id') id: string): Promise<PostResponseDto> {
     return this.postService.findOne(id) as unknown as Promise<PostResponseDto>;
+  }
+
+  @Post('/:id/vote')
+  @ApiOkResponse({
+    status: 200,
+    schema: {
+      $ref: getSchemaPath(StatusResponseDto),
+    },
+  })
+  @ApiResponse({ status: 404 })
+  @ApiOperation({ description: 'vote post', summary: 'vote post' })
+  votePost(
+    @Param('id') id: string,
+    @Body() votePostReq: VotePostDto,
+  ): Promise<StatusResponseDto> {
+    return this.postService.votePost(
+      id,
+      votePostReq,
+    ) as unknown as Promise<StatusResponseDto>;
   }
 }

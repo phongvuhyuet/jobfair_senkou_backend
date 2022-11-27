@@ -49,11 +49,11 @@ __decorate([
 ], Post.prototype, "user_id", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Post.prototype, "upvote_count", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: 0 }),
-    __metadata("design:type", String)
+    __metadata("design:type", Number)
 ], Post.prototype, "downvote_count", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),

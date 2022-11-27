@@ -6,6 +6,8 @@ import { CreatePostDto } from './dtos/create-post.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
 import { PostResponseDto } from './dtos/post-resp.dto';
+import { VotePostDto } from './dtos/vote-post.dto';
+import { FilterPostDto } from './dtos/filter-post.dto';
 
 @Injectable()
 export class PostsService {
@@ -25,9 +27,12 @@ export class PostsService {
 
     return result;
   }
-  async filter(topic_id: string): Promise<PostDocument[]> {
+  async filter(filter: FilterPostDto): Promise<PostDocument[]> {
     const result = await this.postModel
-      .find({ topic_id: topic_id })
+      .find({
+        ...(filter.topic_id ? { topic_id: filter.topic_id } : {}),
+        ...(filter.title ? { title: { $regex: `.*${filter.title}.*` } } : {}),
+      })
       .populate({
         path: 'user_id',
         select: 'name _id',
@@ -36,10 +41,12 @@ export class PostsService {
         path: 'topic_id',
         select: 'name _id',
       })
-      .sort({ createdAt: 'desc' })
       .exec();
-
-    return result;
+    return result.sort((a: PostDocument, b: PostDocument) => {
+      return (
+        b.upvote_count - b.downvote_count - (a.upvote_count - a.upvote_count)
+      );
+    });
   }
   async newestPosts(count: number): Promise<PostDocument[]> {
     return await this.postModel
@@ -98,5 +105,22 @@ export class PostsService {
   async updateAll(body: UpdatePostDto) {
     await this.postModel.updateMany({}, body);
     return { message: 'Update Success' };
+  }
+  async votePost(id: string, body: VotePostDto): Promise<StatusResponseDto> {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      throw new NotFoundException('Post not found');
+
+    const post = await this.postModel.findOne({ _id: id }).exec();
+    if (!post) throw new NotFoundException('Post not found');
+    // TODO: handle user-vote relations
+    if (body.is_upvote) {
+      post.upvote_count = post.upvote_count + 1;
+    } else {
+      post.downvote_count = post.downvote_count + 1;
+    }
+    await post.save();
+    return {
+      message: 'vote success',
+    };
   }
 }

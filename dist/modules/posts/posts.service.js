@@ -35,9 +35,9 @@ let PostsService = class PostsService {
             .exec();
         return result;
     }
-    async filter(topic_id) {
+    async filter(filter) {
         const result = await this.postModel
-            .find({ topic_id: topic_id })
+            .find(Object.assign(Object.assign({}, (filter.topic_id ? { topic_id: filter.topic_id } : {})), (filter.title ? { title: { $regex: `.*${filter.title}.*` } } : {})))
             .populate({
             path: 'user_id',
             select: 'name _id',
@@ -46,9 +46,10 @@ let PostsService = class PostsService {
             path: 'topic_id',
             select: 'name _id',
         })
-            .sort({ createdAt: 'desc' })
             .exec();
-        return result;
+        return result.sort((a, b) => {
+            return (b.upvote_count - b.downvote_count - (a.upvote_count - a.upvote_count));
+        });
     }
     async newestPosts(count) {
         return await this.postModel
@@ -109,6 +110,23 @@ let PostsService = class PostsService {
     async updateAll(body) {
         await this.postModel.updateMany({}, body);
         return { message: 'Update Success' };
+    }
+    async votePost(id, body) {
+        if (!mongoose_2.default.Types.ObjectId.isValid(id))
+            throw new common_1.NotFoundException('Post not found');
+        const post = await this.postModel.findOne({ _id: id }).exec();
+        if (!post)
+            throw new common_1.NotFoundException('Post not found');
+        if (body.is_upvote) {
+            post.upvote_count = post.upvote_count + 1;
+        }
+        else {
+            post.downvote_count = post.downvote_count + 1;
+        }
+        await post.save();
+        return {
+            message: 'vote success',
+        };
     }
 };
 PostsService = __decorate([
