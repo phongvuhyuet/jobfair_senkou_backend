@@ -125,7 +125,13 @@ let PostsService = class PostsService {
             user_id: '6367ca19d8195dbd6c728a0c',
         });
         if (vote && vote.isUpvote === body.is_upvote) {
-            throw new common_1.BadRequestException('voted');
+            post[!body.is_upvote ? 'downvote_count' : 'upvote_count'] =
+                post[!body.is_upvote ? 'downvote_count' : 'upvote_count'] - 1;
+            await vote.delete();
+            await post.save();
+            return {
+                message: 'deleted vote',
+            };
         }
         if (vote) {
             vote.isUpvote = body.is_upvote;
