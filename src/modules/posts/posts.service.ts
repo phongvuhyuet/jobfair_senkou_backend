@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Post, PostDocument } from './posts.schema';
@@ -8,10 +12,15 @@ import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
 import { PostResponseDto } from './dtos/post-resp.dto';
 import { VotePostDto } from './dtos/vote-post.dto';
 import { FilterPostDto } from './dtos/filter-post.dto';
+import { Vote, VoteDocument } from './votes.schema';
+import { IsVoteResponseDto } from './dtos/is-vote.dto';
 
 @Injectable()
 export class PostsService {
-  constructor(@InjectModel(Post.name) private postModel: Model<PostDocument>) {}
+  constructor(
+    @InjectModel(Post.name) private postModel: Model<PostDocument>,
+    @InjectModel(Vote.name) private voteModel: Model<VoteDocument>,
+  ) {}
   async findAll(): Promise<PostDocument[]> {
     const result = await this.postModel
       .find()
@@ -41,12 +50,11 @@ export class PostsService {
         path: 'topic_id',
         select: 'name _id',
       })
+      .sort({
+        createdAt: 'desc',
+      })
       .exec();
-    return result.sort((a: PostDocument, b: PostDocument) => {
-      return (
-        b.upvote_count - b.downvote_count - (a.upvote_count - a.upvote_count)
-      );
-    });
+    return result;
   }
   async newestPosts(count: number): Promise<PostDocument[]> {
     return await this.postModel
@@ -112,7 +120,28 @@ export class PostsService {
 
     const post = await this.postModel.findOne({ _id: id }).exec();
     if (!post) throw new NotFoundException('Post not found');
-    // TODO: handle user-vote relations
+
+    const vote = await this.voteModel.findOne({
+      post_id: id,
+      user_id: '6367ca19d8195dbd6c728a0c',
+    });
+    if (vote && vote.isUpvote === body.is_upvote) {
+      throw new BadRequestException('voted');
+    }
+    if (vote) {
+      vote.isUpvote = body.is_upvote;
+      post[body.is_upvote ? 'downvote_count' : 'upvote_count'] =
+        post[body.is_upvote ? 'downvote_count' : 'upvote_count'] - 1;
+      await vote.save();
+    } else {
+      const newVote = new this.voteModel({
+        post_id: id,
+        user_id: '6367ca19d8195dbd6c728a0c',
+        isUpvote: body.is_upvote,
+      });
+      await newVote.save();
+    }
+
     if (body.is_upvote) {
       post.upvote_count = post.upvote_count + 1;
     } else {
@@ -121,6 +150,25 @@ export class PostsService {
     await post.save();
     return {
       message: 'vote success',
+    };
+  }
+
+  async getPostVote(id: string): Promise<IsVoteResponseDto> {
+    const vote = await this.voteModel.findOne({
+      post_id: id,
+      user_id: '6367ca19d8195dbd6c728a0c',
+    });
+    if (vote) {
+      if (vote.isUpvote)
+        return {
+          result: 'upvoted',
+        };
+      return {
+        result: 'downvoted',
+      };
+    }
+    return {
+      result: 'none',
     };
   }
 }

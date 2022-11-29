@@ -17,9 +17,11 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const posts_schema_1 = require("./posts.schema");
+const votes_schema_1 = require("./votes.schema");
 let PostsService = class PostsService {
-    constructor(postModel) {
+    constructor(postModel, voteModel) {
         this.postModel = postModel;
+        this.voteModel = voteModel;
     }
     async findAll() {
         const result = await this.postModel
@@ -46,10 +48,11 @@ let PostsService = class PostsService {
             path: 'topic_id',
             select: 'name _id',
         })
+            .sort({
+            createdAt: 'desc',
+        })
             .exec();
-        return result.sort((a, b) => {
-            return (b.upvote_count - b.downvote_count - (a.upvote_count - a.upvote_count));
-        });
+        return result;
     }
     async newestPosts(count) {
         return await this.postModel
@@ -117,6 +120,27 @@ let PostsService = class PostsService {
         const post = await this.postModel.findOne({ _id: id }).exec();
         if (!post)
             throw new common_1.NotFoundException('Post not found');
+        const vote = await this.voteModel.findOne({
+            post_id: id,
+            user_id: '6367ca19d8195dbd6c728a0c',
+        });
+        if (vote && vote.isUpvote === body.is_upvote) {
+            throw new common_1.BadRequestException('voted');
+        }
+        if (vote) {
+            vote.isUpvote = body.is_upvote;
+            post[body.is_upvote ? 'downvote_count' : 'upvote_count'] =
+                post[body.is_upvote ? 'downvote_count' : 'upvote_count'] - 1;
+            await vote.save();
+        }
+        else {
+            const newVote = new this.voteModel({
+                post_id: id,
+                user_id: '6367ca19d8195dbd6c728a0c',
+                isUpvote: body.is_upvote,
+            });
+            await newVote.save();
+        }
         if (body.is_upvote) {
             post.upvote_count = post.upvote_count + 1;
         }
@@ -128,11 +152,31 @@ let PostsService = class PostsService {
             message: 'vote success',
         };
     }
+    async getPostVote(id) {
+        const vote = await this.voteModel.findOne({
+            post_id: id,
+            user_id: '6367ca19d8195dbd6c728a0c',
+        });
+        if (vote) {
+            if (vote.isUpvote)
+                return {
+                    result: 'upvoted',
+                };
+            return {
+                result: 'downvoted',
+            };
+        }
+        return {
+            result: 'none',
+        };
+    }
 };
 PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(posts_schema_1.Post.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(votes_schema_1.Vote.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], PostsService);
 exports.PostsService = PostsService;
 //# sourceMappingURL=posts.service.js.map

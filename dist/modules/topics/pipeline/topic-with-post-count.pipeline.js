@@ -16,6 +16,11 @@ const pipeline = [
         },
     },
     {
+        $match: {
+            ['posts.deleted']: false,
+        },
+    },
+    {
         $group: {
             _id: '$_id',
             createdAt: {

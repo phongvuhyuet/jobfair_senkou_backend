@@ -5,9 +5,12 @@ import { UpdatePostDto } from './dtos/update-post.dto';
 import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
 import { VotePostDto } from './dtos/vote-post.dto';
 import { FilterPostDto } from './dtos/filter-post.dto';
+import { VoteDocument } from './votes.schema';
+import { IsVoteResponseDto } from './dtos/is-vote.dto';
 export declare class PostsService {
     private postModel;
-    constructor(postModel: Model<PostDocument>);
+    private voteModel;
+    constructor(postModel: Model<PostDocument>, voteModel: Model<VoteDocument>);
     findAll(): Promise<PostDocument[]>;
     filter(filter: FilterPostDto): Promise<PostDocument[]>;
     newestPosts(count: number): Promise<PostDocument[]>;
@@ -19,4 +22,5 @@ export declare class PostsService {
         message: string;
     }>;
     votePost(id: string, body: VotePostDto): Promise<StatusResponseDto>;
+    getPostVote(id: string): Promise<IsVoteResponseDto>;
 }

@@ -24,6 +24,7 @@ const serialize_interceptor_1 = require("../../interceptors/serialize.intercepto
 const post_resp_dto_1 = require("./dtos/post-resp.dto");
 const vote_post_dto_1 = require("./dtos/vote-post.dto");
 const filter_post_dto_1 = require("./dtos/filter-post.dto");
+const is_vote_dto_1 = require("./dtos/is-vote.dto");
 let PostsController = class PostsController {
     constructor(postService) {
         this.postService = postService;
@@ -50,6 +51,9 @@ let PostsController = class PostsController {
     }
     votePost(id, votePostReq) {
         return this.postService.votePost(id, votePostReq);
+    }
+    getIsVoted(id) {
+        return this.postService.getPostVote(id);
     }
 };
 __decorate([
@@ -180,6 +184,23 @@ __decorate([
     __metadata("design:paramtypes", [String, vote_post_dto_1.VotePostDto]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "votePost", null);
+__decorate([
+    (0, serialize_interceptor_1.Serialize)(is_vote_dto_1.IsVoteResponseDto),
+    (0, common_1.Get)('/:id/isVoted'),
+    (0, swagger_1.ApiExtraModels)(is_vote_dto_1.IsVoteResponseDto),
+    (0, swagger_1.ApiOkResponse)({
+        status: 200,
+        schema: {
+            $ref: (0, swagger_1.getSchemaPath)(is_vote_dto_1.IsVoteResponseDto),
+        },
+    }),
+    (0, swagger_1.ApiOperation)({ description: 'get is voted', summary: 'get is voted' }),
+    openapi.ApiResponse({ status: 200, type: require("./dtos/is-vote.dto").IsVoteResponseDto }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "getIsVoted", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)('posts'),
     (0, common_1.Controller)('posts'),

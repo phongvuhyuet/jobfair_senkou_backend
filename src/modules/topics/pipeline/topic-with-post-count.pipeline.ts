@@ -16,6 +16,11 @@ const pipeline: PipelineStage[] = [
     },
   },
   {
+    $match: {
+      ['posts.deleted']: false,
+    },
+  },
+  {
     $group: {
       _id: '$_id',
       createdAt: {

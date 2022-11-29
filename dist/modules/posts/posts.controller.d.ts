@@ -5,6 +5,7 @@ import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
 import { PostResponseDto } from './dtos/post-resp.dto';
 import { VotePostDto } from './dtos/vote-post.dto';
 import { FilterPostDto } from './dtos/filter-post.dto';
+import { IsVoteResponseDto } from './dtos/is-vote.dto';
 export declare class PostsController {
     private postService;
     constructor(postService: PostsService);
@@ -15,4 +16,5 @@ export declare class PostsController {
     getLatestPost(): Promise<PostResponseDto[]>;
     getPost(id: string): Promise<PostResponseDto>;
     votePost(id: string, votePostReq: VotePostDto): Promise<StatusResponseDto>;
+    getIsVoted(id: string): Promise<IsVoteResponseDto>;
 }

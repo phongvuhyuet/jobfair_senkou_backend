@@ -24,6 +24,7 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { PostResponseDto } from './dtos/post-resp.dto';
 import { VotePostDto } from './dtos/vote-post.dto';
 import { FilterPostDto } from './dtos/filter-post.dto';
+import { IsVoteResponseDto } from './dtos/is-vote.dto';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -148,5 +149,21 @@ export class PostsController {
       id,
       votePostReq,
     ) as unknown as Promise<StatusResponseDto>;
+  }
+
+  @Serialize(IsVoteResponseDto)
+  @Get('/:id/isVoted')
+  @ApiExtraModels(IsVoteResponseDto)
+  @ApiOkResponse({
+    status: 200,
+    schema: {
+      $ref: getSchemaPath(IsVoteResponseDto),
+    },
+  })
+  @ApiOperation({ description: 'get is voted', summary: 'get is voted' })
+  getIsVoted(@Param('id') id: string): Promise<IsVoteResponseDto> {
+    return this.postService.getPostVote(
+      id,
+    ) as unknown as Promise<IsVoteResponseDto>;
   }
 }

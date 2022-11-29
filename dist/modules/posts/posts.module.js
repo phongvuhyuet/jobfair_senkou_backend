@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const posts_controller_1 = require("./posts.controller");
 const posts_schema_1 = require("./posts.schema");
 const posts_service_1 = require("./posts.service");
+const votes_schema_1 = require("./votes.schema");
 let PostsModule = class PostsModule {
 };
 PostsModule = __decorate([
@@ -21,6 +22,7 @@ PostsModule = __decorate([
         exports: [posts_service_1.PostsService],
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: posts_schema_1.Post.name, schema: posts_schema_1.PostSchema }]),
+            mongoose_1.MongooseModule.forFeature([{ name: votes_schema_1.Vote.name, schema: votes_schema_1.VoteSchema }]),
         ],
     })
 ], PostsModule);
