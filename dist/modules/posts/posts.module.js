@@ -13,6 +13,7 @@ const posts_controller_1 = require("./posts.controller");
 const posts_schema_1 = require("./posts.schema");
 const posts_service_1 = require("./posts.service");
 const votes_schema_1 = require("./votes.schema");
+const comments_module_1 = require("./comments/comments.module");
 let PostsModule = class PostsModule {
 };
 PostsModule = __decorate([
@@ -23,6 +24,7 @@ PostsModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: posts_schema_1.Post.name, schema: posts_schema_1.PostSchema }]),
             mongoose_1.MongooseModule.forFeature([{ name: votes_schema_1.Vote.name, schema: votes_schema_1.VoteSchema }]),
+            comments_module_1.CommentsModule,
         ],
     })
 ], PostsModule);
