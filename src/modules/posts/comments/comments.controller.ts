@@ -11,6 +11,7 @@ import {
   ApiExtraModels,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
@@ -19,7 +20,7 @@ import { CreateCommentDto } from './dtos/create-comment-request.dto';
 import { CommentsService } from './comments.service';
 import { UpdateCommentDto } from './dtos/update-comment-request.dto';
 import { StatusResponseDto } from '../../../common-dtos/status-resp.dto';
-
+@ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private commentService: CommentsService) {}
@@ -93,8 +94,8 @@ export class CommentsController {
     },
   })
   @ApiOperation({
-    description: 'update comment',
-    summary: 'update comment',
+    description: 'delete comment',
+    summary: 'delete comment',
   })
   async delete(@Param('id') id: string): Promise<StatusResponseDto> {
     const res = await this.commentService.delete(id);

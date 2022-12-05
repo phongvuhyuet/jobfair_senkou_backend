@@ -113,8 +113,8 @@ __decorate([
         },
     }),
     (0, swagger_1.ApiOperation)({
-        description: 'update comment',
-        summary: 'update comment',
+        description: 'delete comment',
+        summary: 'delete comment',
     }),
     openapi.ApiResponse({ status: 200, type: require("../../../common-dtos/status-resp.dto").StatusResponseDto }),
     __param(0, (0, common_1.Param)('id')),
@@ -123,6 +123,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CommentsController.prototype, "delete", null);
 CommentsController = __decorate([
+    (0, swagger_1.ApiTags)('comments'),
     (0, common_1.Controller)('comments'),
     __metadata("design:paramtypes", [comments_service_1.CommentsService])
 ], CommentsController);
