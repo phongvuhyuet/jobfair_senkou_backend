@@ -19,4 +19,5 @@ export declare class PostResponseDto {
     status: number;
     createdAt: Date;
     updatedAt: Date;
+    comment_count: number;
 }

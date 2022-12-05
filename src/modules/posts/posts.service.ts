@@ -9,17 +9,19 @@ import { Post, PostDocument } from './posts.schema';
 import { CreatePostDto } from './dtos/create-post.dto';
 import { UpdatePostDto } from './dtos/update-post.dto';
 import { StatusResponseDto } from 'src/common-dtos/status-resp.dto';
-import { PostResponseDto } from './dtos/post-resp.dto';
 import { VotePostDto } from './dtos/vote-post.dto';
 import { FilterPostDto } from './dtos/filter-post.dto';
 import { Vote, VoteDocument } from './votes.schema';
 import { IsVoteResponseDto } from './dtos/is-vote.dto';
+import { Comment, CommentDocument } from './comments/comments.schema';
+import commentCountPipeline from './pipeline/comment-count-by-post.pipeline';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     @InjectModel(Vote.name) private voteModel: Model<VoteDocument>,
+    @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
   ) {}
   async findAll(): Promise<PostDocument[]> {
     const result = await this.postModel
@@ -54,10 +56,20 @@ export class PostsService {
         createdAt: 'desc',
       })
       .exec();
-    return result;
+    const commentCount = await this.commentModel.aggregate(
+      commentCountPipeline,
+    );
+    return result.map((post) => ({
+      comment_count:
+        commentCount.find((el) => el._id.toString() === post._id.toString())
+          ?.countPost || 0,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      ...post._doc,
+    }));
   }
   async newestPosts(count: number): Promise<PostDocument[]> {
-    return await this.postModel
+    const result = await this.postModel
       .find({})
       .populate({
         path: 'user_id',
@@ -70,6 +82,17 @@ export class PostsService {
       .sort({ createdAt: 'desc' })
       .limit(count)
       .exec();
+    const commentCount = await this.commentModel.aggregate(
+      commentCountPipeline,
+    );
+    return result.map((post) => ({
+      comment_count:
+        commentCount.find((el) => el._id.toString() === post._id.toString())
+          ?.countPost || 0,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      ...post._doc,
+    }));
   }
   async findOne(id: string): Promise<PostDocument> {
     if (!mongoose.Types.ObjectId.isValid(id))

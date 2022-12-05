@@ -61,4 +61,7 @@ export class PostResponseDto {
   @Expose()
   @ApiProperty()
   updatedAt: Date;
+  @Expose()
+  @ApiProperty()
+  comment_count: number;
 }

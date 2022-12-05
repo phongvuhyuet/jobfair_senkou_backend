@@ -7,10 +7,12 @@ import { VotePostDto } from './dtos/vote-post.dto';
 import { FilterPostDto } from './dtos/filter-post.dto';
 import { VoteDocument } from './votes.schema';
 import { IsVoteResponseDto } from './dtos/is-vote.dto';
+import { CommentDocument } from './comments/comments.schema';
 export declare class PostsService {
     private postModel;
     private voteModel;
-    constructor(postModel: Model<PostDocument>, voteModel: Model<VoteDocument>);
+    private commentModel;
+    constructor(postModel: Model<PostDocument>, voteModel: Model<VoteDocument>, commentModel: Model<CommentDocument>);
     findAll(): Promise<PostDocument[]>;
     filter(filter: FilterPostDto): Promise<PostDocument[]>;
     newestPosts(count: number): Promise<PostDocument[]>;

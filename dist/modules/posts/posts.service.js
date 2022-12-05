@@ -18,10 +18,13 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const posts_schema_1 = require("./posts.schema");
 const votes_schema_1 = require("./votes.schema");
+const comments_schema_1 = require("./comments/comments.schema");
+const comment_count_by_post_pipeline_1 = require("./pipeline/comment-count-by-post.pipeline");
 let PostsService = class PostsService {
-    constructor(postModel, voteModel) {
+    constructor(postModel, voteModel, commentModel) {
         this.postModel = postModel;
         this.voteModel = voteModel;
+        this.commentModel = commentModel;
     }
     async findAll() {
         const result = await this.postModel
@@ -52,10 +55,14 @@ let PostsService = class PostsService {
             createdAt: 'desc',
         })
             .exec();
-        return result;
+        const commentCount = await this.commentModel.aggregate(comment_count_by_post_pipeline_1.default);
+        return result.map((post) => {
+            var _a;
+            return (Object.assign({ comment_count: ((_a = commentCount.find((el) => el._id.toString() === post._id.toString())) === null || _a === void 0 ? void 0 : _a.countPost) || 0 }, post._doc));
+        });
     }
     async newestPosts(count) {
-        return await this.postModel
+        const result = await this.postModel
             .find({})
             .populate({
             path: 'user_id',
@@ -68,6 +75,11 @@ let PostsService = class PostsService {
             .sort({ createdAt: 'desc' })
             .limit(count)
             .exec();
+        const commentCount = await this.commentModel.aggregate(comment_count_by_post_pipeline_1.default);
+        return result.map((post) => {
+            var _a;
+            return (Object.assign({ comment_count: ((_a = commentCount.find((el) => el._id.toString() === post._id.toString())) === null || _a === void 0 ? void 0 : _a.countPost) || 0 }, post._doc));
+        });
     }
     async findOne(id) {
         if (!mongoose_2.default.Types.ObjectId.isValid(id))
@@ -181,7 +193,9 @@ PostsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(posts_schema_1.Post.name)),
     __param(1, (0, mongoose_1.InjectModel)(votes_schema_1.Vote.name)),
+    __param(2, (0, mongoose_1.InjectModel)(comments_schema_1.Comment.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         mongoose_2.Model])
 ], PostsService);
 exports.PostsService = PostsService;

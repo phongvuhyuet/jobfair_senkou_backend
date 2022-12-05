@@ -27,7 +27,7 @@ class TopicInfo {
 exports.TopicInfo = TopicInfo;
 class PostResponseDto {
     static _OPENAPI_METADATA_FACTORY() {
-        return { _id: { required: true, type: () => String }, title: { required: true, type: () => String }, content: { required: true, type: () => String }, topic: { required: true, type: () => require("./post-resp.dto").TopicInfo }, user: { required: true, type: () => require("./post-resp.dto").UserInfo }, upvote_count: { required: true, type: () => Number }, downvote_count: { required: true, type: () => Number }, reject_reason: { required: true, type: () => String }, publishedAt: { required: true, type: () => Date }, status: { required: true, type: () => Number }, createdAt: { required: true, type: () => Date }, updatedAt: { required: true, type: () => Date } };
+        return { _id: { required: true, type: () => String }, title: { required: true, type: () => String }, content: { required: true, type: () => String }, topic: { required: true, type: () => require("./post-resp.dto").TopicInfo }, user: { required: true, type: () => require("./post-resp.dto").UserInfo }, upvote_count: { required: true, type: () => Number }, downvote_count: { required: true, type: () => Number }, reject_reason: { required: true, type: () => String }, publishedAt: { required: true, type: () => Date }, status: { required: true, type: () => Number }, createdAt: { required: true, type: () => Date }, updatedAt: { required: true, type: () => Date }, comment_count: { required: true, type: () => Number } };
     }
 }
 __decorate([
@@ -95,5 +95,10 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Date)
 ], PostResponseDto.prototype, "updatedAt", void 0);
+__decorate([
+    (0, class_transformer_1.Expose)(),
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", Number)
+], PostResponseDto.prototype, "comment_count", void 0);
 exports.PostResponseDto = PostResponseDto;
 //# sourceMappingURL=post-resp.dto.js.map
